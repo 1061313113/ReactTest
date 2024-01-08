@@ -1,0 +1,11 @@
+/* 动线效果 */
+style="stroke: rgba(76, 83, 110, 0.5); fill: none; stroke-width: 3.88209; stroke-opacity: 1; stroke-dashoffset: -8; stroke-dasharray: 8, 2;"
+
+<path fill="none" stroke="#c7c7c7" d="M150,150A0,0 0 0,1 213.4579719860165,184.07962985793134"></path>
+
+-webkit-font-smoothing: antialiased;
+font-family: sans-serif;
+cursor: default;
+fill: none;
+stroke: rgb(199, 199, 199);
+d: path("M 150 150 A 0 0 0 0 1 213.458 184.08");

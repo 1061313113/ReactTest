@@ -1,0 +1,35 @@
+/* 创建一个带有流光边框的元素 */
+.glowing-border {
+  position: relative;
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 20px;
+  color: #f5ecec;
+}
+
+/* 创建流光边框的::before伪元素 */
+.glowing-border::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  z-index: -1;
+  background: linear-gradient(45deg, #f06, #9f6);
+  border-radius: 10px;
+  animation: glowing 2s linear infinite;
+}
+
+/* 定义流光边框的动画效果 */
+@keyframes glowing {
+  0% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 400% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}

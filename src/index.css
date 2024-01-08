@@ -1,3 +1,8 @@
+/*/* 设置页面的全局样式，包括边距、字体和字体平滑效果。*/
+/*body {*/
+/*  margin: 0;*/
+/*  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",*/
+/*    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",*/
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -6,8 +11,191 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
+/* 设置<code>元素的字体样式。 */
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+/*code {*/
+/*  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',*/
+/*    monospace;*/
+/*}*/
+
+设置ReactFlow图的背景颜色、文本颜色、节点边框半径和阴影效果。 .react-flow {
+  --bg-color: rgb(17, 17, 17);
+  --text-color: rgb(243, 244, 246);
+  --node-border-radius: 10px;
+  --node-box-shadow: 10px 0 15px rgba(42, 138, 246, 0.3),
+    -10px 0 15px rgba(233, 42, 103, 0.3);
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+/* 设置turbo节点的样式，包括边框半径、显示方式、高度、最小宽度、字体、字体权重、字母间距和阴影效果。 */
+.react-flow__node-turbo {
+  border-radius: var(--node-border-radius);
+  display: flex;
+  height: 70px;
+  min-width: 150px;
+  font-family: "Fira Mono", Monospace;
+  font-weight: 500;
+  letter-spacing: -0.2px;
+  box-shadow: var(--node-box-shadow);
+}
+/* 设置turbo节点内部包装元素的样式，包括溢出、显示方式、内边距、位置、边框半径和灵活增长。 */
+.react-flow__node-turbo .wrapper {
+  overflow: hidden;
+  display: flex;
+  padding: 2px;
+  position: relative;
+  border-radius: var(--node-border-radius);
+  flex-grow: 1;
+}
+/* 设置渐变效果的样式，包括内容、位置、内边距、宽度、背景、左边、顶部、转换和边框半径。 */
+.gradient:before {
+  content: "";
+  position: absolute;
+  padding-bottom: calc(100% * 1.41421356237);
+  width: calc(100% * 1.41421356237);
+  background: conic-gradient(
+    from -160deg at 50% 50%,
+    #e92a67 0deg,
+    #a853ba 120deg,
+    #2a8af6 240deg,
+    #e92a67 360deg
+  );
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 100%;
+}
+
+.react-flow__node-turbo.selected .wrapper.gradient:before {
+  content: "";
+  background: conic-gradient(
+    from -160deg at 50% 50%,
+    #e92a67 0deg,
+    #a853ba 120deg,
+    #2a8af6 240deg,
+    rgba(42, 138, 246, 0) 360deg
+  );
+  animation: spinner 4s linear infinite;
+  transform: translate(-50%, -50%) rotate(0deg);
+  z-index: -1;
+}
+/* 定义一个名为spinner的关键帧动画，用于旋转元素。 */
+@keyframes spinner {
+  100% {
+    transform: translate(-50%, -50%) rotate(-360deg);
+  }
+}
+/* 设置turbo节点内部元素的样式，包括背景、内边距、边框半径、显示方式、灵活方向、对齐方式、灵活增长和位置。 */
+.react-flow__node-turbo .inner {
+  background: var(--bg-color);
+  padding: 16px 20px;
+  border-radius: var(--node-border-radius);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-grow: 1;
+  position: relative;
+}
+/* 设置turbo节点中的图标的样式，包括右边距。 */
+.react-flow__node-turbo .icon {
+  margin-right: 8px;
+}
+/* 设置turbo节点中的主体的样式，包括显示方式。 */
+.react-flow__node-turbo .body {
+  display: flex;
+}
+/* 设置turbo节点中的标题的样式，包括字体大小、下边距和行高。 */
+.react-flow__node-turbo .title {
+  font-size: 16px;
+  margin-bottom: 2px;
+  line-height: 1;
+}
+/* 设置turbo节点中的副标题的样式，包括字体大小和颜色。 */
+.react-flow__node-turbo .subline {
+  font-size: 12px;
+  color: #777;
+}
+/* 设置turbo节点中的云图标的样式，包括边框半径、宽度、高度、右边、位置、顶部、转换、显示方式、转换原点、内边距、溢出、阴影和z-index。 */
+.react-flow__node-turbo .cloud {
+  border-radius: 100%;
+  width: 30px;
+  height: 30px;
+  right: 0;
+  position: absolute;
+  top: 0;
+  transform: translate(50%, -50%);
+  display: flex;
+  transform-origin: center center;
+  padding: 2px;
+  overflow: hidden;
+  box-shadow: var(--node-box-shadow);
+  z-index: 1;
+}
+/* 设置turbo节点中的云图标内部div元素的样式，包括背景颜色、灵活增长、边框半径、显示方式、对齐方式、对齐项目和位置。 */
+.react-flow__node-turbo .cloud div {
+  background-color: var(--bg-color);
+  flex-grow: 1;
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+/* 设置ReactFlow图中的操作手柄的样式，包括不透明度。 */
+.react-flow__handle {
+  opacity: 0;
+}
+/* 设置ReactFlow图中的源操作手柄的样式，包括右边。 */
+.react-flow__handle.source {
+  right: -10px;
+}
+/* 设置ReactFlow图中的目标操作手柄的样式，包括左边。 */
+.react-flow__handle.target {
+  left: -10px;
+}
+/* 设置ReactFlow图中的节点在获取焦点时的样式，包括轮廓。 */
+.react-flow__node:focus {
+  outline: none;
+}
+/* 设置ReactFlow图中的边的样式，包括描边、描边宽度和描边不透明度。 */
+.react-flow__edge .react-flow__edge-path {
+  stroke: url(#edge-gradient);
+  stroke-width: 2;
+  stroke-opacity: 0.75;
+}
+/* 设置ReactFlow图中的控制按钮的样式，包括背景颜色、颜色和边框。 */
+.react-flow__controls button {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  border: 1px solid #95679e;
+  border-bottom: none;
+}
+/* 设置ReactFlow图中的控制按钮在鼠标悬停时的样式，包括背景颜色。 */
+.react-flow__controls button:hover {
+  background-color: rgb(37, 37, 37);
+}
+/* 设置ReactFlow图中的第一个控制按钮的样式，包括边框半径。 */
+.react-flow__controls button:first-child {
+  border-radius: 5px 5px 0 0;
+}
+/* 设置ReactFlow图中的最后一个控制按钮的样式，包括边框和边框半径。 */
+.react-flow__controls button:last-child {
+  border-bottom: 1px solid #95679e;
+  border-radius: 0 0 5px 5px;
+}
+/* 设置ReactFlow图中的控制按钮中的路径元素的样式，包括填充。 */
+.react-flow__controls button path {
+  fill: var(--text-color);
+}
+/* 设置ReactFlow图中的归属信息的样式，包括背景。 */
+.react-flow__attribution {
+  background: rgba(200, 200, 200, 0.2);
+}
+/* 设置ReactFlow图中的归属信息中的链接的样式，包括颜色。 */
+.react-flow__attribution a {
+  color: #95679e;
 }

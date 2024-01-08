@@ -1,0 +1,21 @@
+@keyframes gradient {
+  100% {
+    transform: translate(-50%, -50%) rotate(-360deg);
+  }
+}
+
+.flow-border {
+  border: 3px solid;
+  border-image-slice: 1;
+  border-image-source: linear-gradient(
+    to left,
+    violet,
+    indigo,
+    blue,
+    green,
+    yellow,
+    orange,
+    red
+  );
+  animation: gradient 5s ease-in-out infinite;
+}

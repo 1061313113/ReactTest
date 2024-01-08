@@ -1,0 +1,161 @@
+/* @keyframes marquee-border {
+  0% {
+    border-color: red;
+  }
+  25% {
+    border-color: orange;
+  }
+  50% {
+    border-color: yellow;
+  }
+  75% {
+    border-color: green;
+  }
+  100% {
+    border-color: blue;
+  }
+} */
+
+/* @keyframes rotating-border {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+} */
+
+/* 这个规则用于定义spinner动画的关键帧。在这里，它被用来定义一个旋转动画，使得背景渐变可以逆时针旋转。 */
+@keyframes spinner {
+  100% {
+    transform: translate(-50%, -50%) rotate(-360deg);
+  }
+}
+
+.marquee-border {
+  content: "";
+  position: absolute;
+  padding-bottom: calc(100% * 1.41421356237);
+  width: calc(100% * 1.41421356237);
+  background: conic-gradient(
+    from -160deg at 50% 50%,
+    #e92a67 0deg,
+    #a853ba 120deg,
+    #2a8af6 240deg,
+    #e92a67 360deg
+  );
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 100%;
+
+  border-radius: var(--node-border-radius);
+  display: flex;
+  height: 70px;
+  min-width: 150px;
+  font-family: "Fira Mono", Monospace;
+  font-weight: 500;
+  letter-spacing: -0.2px;
+  box-shadow: var(--node-box-shadow);
+
+  content: "";
+  background: conic-gradient(
+    from -160deg at 50% 50%,
+    #e92a67 0deg,
+    #a853ba 120deg,
+    #2a8af6 240deg,
+    rgba(42, 138, 246, 0) 360deg
+  );
+  animation: spinner 4s linear infinite;
+  transform: translate(-50%, -50%) rotate(0deg);
+  z-index: -1;
+
+  border-radius: var(--node-border-radius);
+  display: flex;
+  height: 70px;
+  min-width: 150px;
+  font-family: "Fira Mono", Monospace;
+  font-weight: 500;
+  letter-spacing: -0.2px;
+  box-shadow: var(--node-box-shadow);
+
+  content: "";
+  position: absolute;
+  padding-bottom: calc(100% * 1.41421356237);
+  width: calc(100% * 1.41421356237);
+  background: conic-gradient(
+    from -160deg at 50% 50%,
+    #e92a67 0deg,
+    #a853ba 120deg,
+    #2a8af6 240deg,
+    #e92a67 360deg
+  );
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 100%;
+
+  /* 加长宽度，背景，字体设置 */
+  --bg-color: rgb(17, 17, 17);
+  --text-color: rgb(243, 244, 246);
+  --node-border-radius: 10px;
+  --node-box-shadow: 10px 0 15px rgba(42, 138, 246, 0.3),
+    -10px 0 15px rgba(233, 42, 103, 0.3);
+  background-color: var(--bg-color);
+  color: var(--text-color);
+
+  /* 加长宽度 */
+  border-radius: var(--node-border-radius);
+  display: flex;
+  height: 70px;
+  min-width: 150px;
+  font-family: "Fira Mono", Monospace;
+  font-weight: 500;
+  letter-spacing: -0.2px;
+  box-shadow: var(--node-box-shadow);
+
+  /* 适配节点宽度 */
+  overflow: hidden;
+  display: flex;
+  padding: 2px;
+  position: relative;
+  border-radius: var(--node-border-radius);
+  flex-grow: 1;
+
+  /* 光晕 */
+  content: "";
+  background: conic-gradient(
+    from -160deg at 50% 50%,
+    #e92a67 0deg,
+    s #a853ba 120deg,
+    #2a8af6 240deg,
+    rgba(42, 138, 246, 0) 360deg
+  );
+  animation: spinner 4s linear infinite;
+  transform: translate(-50%, -50%) rotate(0deg);
+  z-index: -1;
+
+  background: var(--bg-color);
+  padding: 16px 20px;
+  border-radius: var(--node-border-radius);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-grow: 1;
+  position: relative;
+
+  /* width: 100%; */
+  /* 包括边框和内边距在内的元素的总宽度将等于width属性的值 */
+  /* box-sizing: border-box; */
+  /* height: 100%; */
+  /* font-size: 3vw; */
+  /* font-size: calc(50% * 1em); */
+
+  /* box-shadow: var(--node-box-shadow);
+  border-radius: var(--node-border-radius);
+  display: flex; */
+
+  border: 3px solid;
+  padding: 0px;
+  /* animation: marquee-border 5s linear infinite; */
+}

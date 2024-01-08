@@ -1,0 +1,87 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #0c1022;
+}
+.box {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.75);
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+/* 上述属性作用 */
+.box::after {
+  content: "";
+  position: absolute;
+  width: 1000px;
+  height: 1000px;
+  background-image: conic-gradient(
+    transparent,
+    transparent,
+    transparent,
+    #d400d4
+  );
+  animation: animate 4s linear infinite;
+  animation-delay: -2s;
+}
+
+.box::before {
+  content: "";
+  position: absolute;
+  width: 1000px;
+  height: 1000px;
+  background-image: conic-gradient(
+    transparent,
+    transparent,
+    transparent,
+    #00ccff
+  );
+  animation: animate 4s linear infinite;
+}
+@keyframes animate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.box span {
+  position: absolute;
+  inset: 5px;
+  border-radius: 16px;
+  background: #0c1022;
+  z-index: 1;
+
+  display: flex;
+  flex-direction: column;
+  /* justify-content: space-between; */
+  justify-content: space-around; /* 或者使用 space-evenly */
+  /* height: 100%;  height100%导致最后一个div会占据span底部，影响动画效果，删除即可*/
+}
+
+.box div {
+  position: relative;
+  z-index: 2;
+  color: #fff;
+  /* font-size: calc(1vw * (50 / 10)); */
+  font-size: 0.7vw;
+  font-weight: bold;
+
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tight {
+  margin: 5px 0; /* 这将设置h2元素的上下外边距为10px，左右外边距为0 */
+}
