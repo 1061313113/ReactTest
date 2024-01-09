@@ -937,10 +937,17 @@ class BasicForm extends Component {
     //   // 将连线加粗并改为虚线
     //   .merge(link); // 合并新旧数据
 
+    const xScale = d3
+      .scaleTime()
+      .domain([new Date("2022-01-01"), new Date("2022-01-05")])
+      .range([0, 400]);
+
+    const yScale = d3.scaleLinear().domain([0, 25]).range([200, 0]);
+
     const line = d3
       .line()
-      .x((d) => d.pageX)
-      .y((d) => d.pageY)
+      // .x((d) => xScale(new Date(d.date)))
+      // .y((d) => yScale(d.value))
       .curve(d3.curveMonotoneX); // 使用curve函数来创建平滑的曲线
 
     link

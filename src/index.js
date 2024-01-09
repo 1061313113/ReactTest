@@ -14,7 +14,7 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <>
     <D3Network />
-    {/* <D3SelectDemo /> */}
+    <D3SelectDemo />
   </>
 );
 // import ReactDOM from "react-dom";
