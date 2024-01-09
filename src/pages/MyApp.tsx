@@ -1,5 +1,6 @@
 import React from "react";
 import { useState } from "react";
+import SelectDemo from "./d3/SelectDemo.tsx";
 
 export default function MyApp() {
   const [count, setCount] = useState(0);
@@ -7,10 +8,11 @@ export default function MyApp() {
   function handleClick() {
     setCount(count + 1);
   }
-  
+
   return (
     <>
       <div>
+        <SelectDemo></SelectDemo>
         <h1>Welcome to my app</h1>
         <MyButton />
         <MyButton />

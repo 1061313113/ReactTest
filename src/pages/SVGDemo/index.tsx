@@ -1,4 +1,5 @@
 import React from "react";
+import StrokeLinecap from "../svg/strokeLinecap.svg";
 
 class SVGClass extends React.Component {
   render() {
@@ -25,6 +26,7 @@ class SVGClass extends React.Component {
             SVG
           </text>
         </svg>
+        <StrokeLinecap></StrokeLinecap>
       </>
     );
   }

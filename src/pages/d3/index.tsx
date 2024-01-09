@@ -621,28 +621,28 @@ class BasicForm extends Component {
       })
       .on("zoom", (e) => {
         let scale = e.transform.k;
-        if (scale > 1.3) {
-          // this.svg.selectAll('.nodessvg').remove();
-          this.setState(
-            {
-              rawData: raw222,
-            }
-            // this.updateDiagrarm,
-          );
-          this.svg
-            .selectAll("g.graphGroup")
-            .attr(
-              "transform",
-              "translate(" +
-                e.transform.x +
-                "," +
-                e.transform.y +
-                ") scale(" +
-                1.3 +
-                ")"
-            );
-          return;
-        }
+        // if (scale > 1.3) {
+        //   // this.svg.selectAll('.nodessvg').remove();
+        //   this.setState(
+        //     {
+        //       rawData: raw222,
+        //     }
+        //     // this.updateDiagrarm,
+        //   );
+        //   this.svg
+        //     .selectAll("g.graphGroup")
+        //     .attr(
+        //       "transform",
+        //       "translate(" +
+        //         e.transform.x +
+        //         "," +
+        //         e.transform.y +
+        //         ") scale(" +
+        //         1.3 +
+        //         ")"
+        //     );
+        //   return;
+        // }
         console.log("zoom", e);
         // this.svg.selectAll('circle').attr('transform',
         //     'translate(' + e.transform.x + ',' + e.transform.y + ') scale(' + e.transform.k + ')'
@@ -923,18 +923,26 @@ class BasicForm extends Component {
     let link = this.linksGroup
       .selectAll("path")
       .attr("class", "links")
-      .data(data.links);
-    link.exit().remove();
-    link = link
-      .enter()
-      .append("path")
-      .attr("fill", "none")
-      // .attr('stroke-width', function (d) {
-      //   return Math.sqrt(d.value);
-      // })
-      // .attr("class", "links")
-      // 将连线加粗并改为虚线
-      .merge(link); // 合并新旧数据
+      .data(data.links)
+      .join((enter) => enter.append("path").attr("fill", "none"));
+    // link.exit().remove();
+    // link = link
+    //   .enter()
+    //   .append("path")
+    //   .attr("fill", "none")
+    //   // .attr('stroke-width', function (d) {
+    //   //   return Math.sqrt(d.value);
+    //   // })
+    //   // .attr("class", "links")
+    //   // 将连线加粗并改为虚线
+    //   .merge(link); // 合并新旧数据
+
+    const line = d3
+      .line()
+      .x((d) => d.pageX)
+      .y((d) => d.pageY)
+      .curve(d3.curveMonotoneX); // 使用curve函数来创建平滑的曲线
+
     link
       .filter((item) => {
         console.log("link.filter.item", item);
@@ -950,7 +958,8 @@ class BasicForm extends Component {
       .attr("stroke-dasharray", "8, 2")
       .on("click", (d) => {
         console.log("link.click.d", d);
-      });
+      })
+      .attr("d", line);
 
     // .remove()
     // // 添加过渡效果

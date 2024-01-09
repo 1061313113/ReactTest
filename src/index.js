@@ -1,7 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-// import App from "./pages/d3/index.tsx";
+import MyApp from "./pages/MyApp.tsx";
+import D3Network from "./pages/d3/index.tsx";
+import D3SelectDemo from "./pages/d3/SelectDemo.tsx";
 // import ListFilter from "./pages/Method/ListFilter.tsx";
 import SVGClass from "./pages/SVGDemo/index.tsx";
 import reportWebVitals from "./reportWebVitals";
@@ -9,7 +11,12 @@ import PanoramicTopologyView from "./pages/PanoramicTopologyView.tsx";
 import "./styles.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<SVGClass />);
+root.render(
+  <>
+    <D3Network />
+    {/* <D3SelectDemo /> */}
+  </>
+);
 // import ReactDOM from "react-dom";
 // import "./index.css";
 // import reportWebVitals from "./reportWebVitals";
