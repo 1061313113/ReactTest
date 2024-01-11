@@ -920,11 +920,30 @@ class BasicForm extends Component {
     console.log("generateNode", data);
     console.log("updateDiagrarm.this", this);
     console.log("updateDiagrarm.this.linksGroup", this.linksGroup);
+
+    // 创建一个曲线生成器
+    const line = d3
+      .line()
+      .x(function (d) {
+        console.log("line.d", d);
+        return d.x;
+      })
+      .y(function (d) {
+        return d.y;
+      })
+      .curve(d3.curveBasis); // 使用curveBasis曲线类型，可以创建一个向下弯曲的曲线
+
     let link = this.linksGroup
       .selectAll("path")
       .attr("class", "links")
       .data(data.links)
-      .join((enter) => enter.append("path").attr("fill", "none"));
+      .join(
+        (enter) =>
+          enter.append("path").attr("class", "links").attr("fill", "none"),
+        (update) => update, // 处理更新的情况
+        (exit) => exit.remove() // 处理退出的情况
+      )
+      .attr("d", line);
     // link.exit().remove();
     // link = link
     //   .enter()
@@ -937,36 +956,65 @@ class BasicForm extends Component {
     //   // 将连线加粗并改为虚线
     //   .merge(link); // 合并新旧数据
 
-    const xScale = d3
-      .scaleTime()
-      .domain([new Date("2022-01-01"), new Date("2022-01-05")])
-      .range([0, 400]);
+    // 创建一个弧生成器
+    // 创建一个弯曲的曲线
+    // const arc = d3.arc()({
+    //   innerRadius: 0,
+    //   outerRadius: 100,
+    //   startAngle: Math.PI, // 从180度开始
+    //   endAngle: Math.PI * 2, // 到360度结束
+    // });
+    if (!isEmpty(addLinks)) {
+      debugger;
+      link
+        .filter((item) => {
+          return item.label ? true : false;
+        })
+        // .attr("d", (d) => buildSelectLinks(d))
+        .attr("stroke", "rgba(76, 83, 110, 0.5)")
+        .attr("stroke-width", 3.88209)
+        .attr("stroke-opacity", 1)
+        // .attr("stroke-dashoffset", (item) => {
+        //   console.log("link.attr.item", item);
+        //   return 8;
+        // })
+        .attr("stroke-dasharray", "8, 3")
+        .on("click", (d) => {
+          console.log("link.click.d", d);
+        })
+        .transition()
+        .duration(100000) // 过渡持续时间为1秒
+        .ease(d3.easeLinear) // 使用线性缓动函数
+        .attr("stroke-dashoffset", (item) => {
+          // 在这里计算新的dashoffset值
+          const newDashOffset = calculateNewDashOffset(item);
+          return newDashOffset;
+        });
+    }
 
-    const yScale = d3.scaleLinear().domain([0, 25]).range([200, 0]);
+    function calculateNewDashOffset(item) {
+      // 基于当前状态计算新的dashoffset值
+      // 这里可以根据具体的逻辑和需求进行计算
+      // 例如根据时间、数据等来决定新的dashoffset值
+      const newDashOffset = Math.random() * 10000; // 举例：随机生成一个新的dashoffset值
+      return newDashOffset;
+    }
 
-    const line = d3
-      .line()
-      // .x((d) => xScale(new Date(d.date)))
-      // .y((d) => yScale(d.value))
-      .curve(d3.curveMonotoneX); // 使用curve函数来创建平滑的曲线
+    function buildSelectLinks(d) {
+      console.log("buildSelectLinks.d", d);
+      // 在这里，您可以根据链接的数据（d）来计算曲线路径
+      // 例如，您可以使用M、Q等坐标来描述一条曲线
+      // 这里是一个示例，您可以根据您的实际需求进行修改
+      const sourceX = d.source.x;
+      const sourceY = d.source.y;
+      const targetX = d.target.x;
+      const targetY = d.target.y;
 
-    link
-      .filter((item) => {
-        console.log("link.filter.item", item);
-        return item.label ? true : false;
-      })
-      .attr("stroke", "rgba(76, 83, 110, 0.5)")
-      .attr("stroke-width", 3.88209)
-      .attr("stroke-opacity", 1)
-      .attr("stroke-dashoffset", (item) => {
-        console.log("link.attr.item", item);
-        return 8;
-      })
-      .attr("stroke-dasharray", "8, 2")
-      .on("click", (d) => {
-        console.log("link.click.d", d);
-      })
-      .attr("d", line);
+      // 构建描述曲线路径的字符串
+      const curvePath = `M${sourceX},${sourceY} Q${sourceX},${targetY} ${targetX},${targetY}`;
+
+      return curvePath;
+    }
 
     // .remove()
     // // 添加过渡效果
@@ -1150,7 +1198,7 @@ class BasicForm extends Component {
           // })
           // .distance(40)
           .strength((item) => {
-            console.log("strength.item", item);
+            // console.log("strength.item", item);
             return item.label === label ? 0 : 1;
           }) // 连接力强度 0 ~ 1
           .iterations(1)
@@ -1177,7 +1225,7 @@ class BasicForm extends Component {
         }
         return `translate(${d.x},${d.y})`;
       });
-      console.log("tick link", link);
+      // console.log("tick link", link);
       link
         .attr("stroke", "#c7c7c7")
         // .attr('x1', (d) => validateXY(d.source.x, 'x'))
@@ -1201,7 +1249,32 @@ class BasicForm extends Component {
     }
 
     function generateArc(d) {
+      // console.log("generateArc.d", d);
       let arc = 0;
+      // const QX =
+      //   (d.source.x + (d.target.x - d.source.x) / 2) *
+      //   (d.source.y > d.target.y ? 0.8 : 1.2);
+      // const QY = (d.source.y + (d.target.y - d.source.y) / 2) * 1.1;
+      const QX = d.source.x;
+      const QY = d.target.y;
+      if (d.label) {
+        return (
+          "M" +
+          d.source.x +
+          "," +
+          d.source.y +
+          "Q" +
+          QX +
+          // (d.target.x - d.source.x) / 2 +
+          "," +
+          QY +
+          // (d.target.y - d.source.y) / 2 +
+          "," +
+          d.target.x +
+          "," +
+          d.target.y
+        );
+      }
       if (d.type === "net") {
         arc = 0.1;
       }

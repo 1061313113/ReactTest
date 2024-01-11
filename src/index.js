@@ -4,6 +4,7 @@ import "./index.css";
 import MyApp from "./pages/MyApp.tsx";
 import D3Network from "./pages/d3/index.tsx";
 import D3SelectDemo from "./pages/d3/SelectDemo.tsx";
+import D3Arcs from "./pages/d3/D3Arcs.tsx";
 // import ListFilter from "./pages/Method/ListFilter.tsx";
 import SVGClass from "./pages/SVGDemo/index.tsx";
 import reportWebVitals from "./reportWebVitals";
@@ -15,6 +16,7 @@ root.render(
   <>
     <D3Network />
     <D3SelectDemo />
+    <D3Arcs />
   </>
 );
 // import ReactDOM from "react-dom";
