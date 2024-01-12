@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import _, { isEmpty } from "lodash";
+import _, { isEmpty, get } from "lodash";
 import { Button, Col, Input, Row } from "antd";
 import * as d3 from "d3";
+const { Search } = Input;
 
 require("./style.css");
 
@@ -443,157 +444,215 @@ const raw = [
 const label = "selectLinks";
 
 class BasicForm extends Component {
-  state = {
-    data: {
-      nodes: [
-        {
-          id: "sz",
-          group: 1,
-          name: "深圳研发",
-          width: 36,
-        },
-        {
-          id: "qh",
-          group: 2,
-          name: "前海AZ1",
-          width: 30,
-        },
-        {
-          id: "sk",
-          group: 2,
-          name: "蛇口AZ1",
-          width: 30,
-        },
-        {
-          id: "xl",
-          group: 2,
-          name: "西丽AZ1",
-          width: 30,
-        },
-        {
-          id: "qh-dmz",
-          group: 3,
-          name: "DMZ",
-          width: 24,
-        },
-        {
-          id: "qh-dmz-mu1",
-          group: 4,
-          name: "qhza01m01",
-          width: 20,
-        },
-        {
-          id: "qh-biz",
-          group: 3,
-          name: "BIZ",
-          width: 24,
-        },
+  // state = {
 
-        {
-          id: "qh-biz-mu1",
-          group: 4,
-          name: "qhza01m02",
-          width: 20,
-        },
+  // };
 
-        {
-          id: "qh-biz-mu2",
-          group: 4,
-          name: "qhza01m03",
-          width: 20,
-        },
+  constructor(props) {
+    super(props);
+    this.myRef = React.createRef();
+    this.state = {
+      searchValue: null, // 添加一个新的状态来存储搜索的节点ID
+      data: {
+        nodes: [
+          {
+            id: "sz",
+            group: 1,
+            name: "深圳研发",
+            width: 36,
+          },
+          {
+            id: "qh",
+            group: 2,
+            name: "前海AZ1",
+            width: 30,
+          },
+          {
+            id: "sk",
+            group: 2,
+            name: "蛇口AZ1",
+            width: 30,
+          },
+          {
+            id: "xl",
+            group: 2,
+            name: "西丽AZ1",
+            width: 30,
+          },
+          {
+            id: "qh-dmz",
+            group: 3,
+            name: "DMZ",
+            width: 24,
+          },
+          {
+            id: "qh-dmz-mu1",
+            group: 4,
+            name: "qhza01m01",
+            width: 20,
+          },
+          {
+            id: "qh-biz",
+            group: 3,
+            name: "BIZ",
+            width: 24,
+          },
 
-        {
-          id: "sk-dmz",
-          group: 3,
-          name: "DMZ",
-          width: 24,
-        },
-        {
-          id: "sk-biz",
-          group: 3,
-          name: "BIZ",
-          width: 24,
-        },
-        {
-          id: "xl-dmz",
-          group: 3,
-          name: "DMZ",
-          width: 24,
-        },
-        {
-          id: "xl-biz",
-          group: 3,
-          name: "BIZ",
-          width: 24,
-        },
-      ],
-      links: [
-        {
-          source: "sz",
-          target: "qh",
-          value: 1,
-        },
-        {
-          source: "qh",
-          target: "qh-dmz",
-          value: 1,
-        },
+          {
+            id: "qh-biz-mu1",
+            group: 4,
+            name: "qhza01m02",
+            width: 20,
+          },
 
-        {
-          source: "qh-dmz",
-          target: "qh-dmz-mu1",
-          value: 1,
-        },
-        {
-          source: "qh",
-          target: "qh-biz",
-          value: 1,
-        },
-        {
-          source: "qh-biz",
-          target: "qh-biz-mu1",
-          value: 1,
-        },
-        {
-          source: "qh-biz",
-          target: "qh-biz-mu2",
-          value: 1,
-        },
-        {
-          source: "sz",
-          target: "sk",
-          value: 1,
-        },
-        {
-          source: "sk",
-          target: "sk-dmz",
-          value: 1,
-        },
-        {
-          source: "sk",
-          target: "sk-biz",
-          value: 1,
-        },
-        {
-          source: "sz",
-          target: "xl",
-          value: 1,
-        },
-        {
-          source: "xl",
-          target: "xl-dmz",
-          value: 1,
-        },
-        {
-          source: "xl",
-          target: "xl-biz",
-          value: 1,
-        },
-      ],
-    },
-    rawData: raw,
-    addLinks: [],
+          {
+            id: "qh-biz-mu2",
+            group: 4,
+            name: "qhza01m03",
+            width: 20,
+          },
+
+          {
+            id: "sk-dmz",
+            group: 3,
+            name: "DMZ",
+            width: 24,
+          },
+          {
+            id: "sk-biz",
+            group: 3,
+            name: "BIZ",
+            width: 24,
+          },
+          {
+            id: "xl-dmz",
+            group: 3,
+            name: "DMZ",
+            width: 24,
+          },
+          {
+            id: "xl-biz",
+            group: 3,
+            name: "BIZ",
+            width: 24,
+          },
+        ],
+        links: [
+          {
+            source: "sz",
+            target: "qh",
+            value: 1,
+          },
+          {
+            source: "qh",
+            target: "qh-dmz",
+            value: 1,
+          },
+
+          {
+            source: "qh-dmz",
+            target: "qh-dmz-mu1",
+            value: 1,
+          },
+          {
+            source: "qh",
+            target: "qh-biz",
+            value: 1,
+          },
+          {
+            source: "qh-biz",
+            target: "qh-biz-mu1",
+            value: 1,
+          },
+          {
+            source: "qh-biz",
+            target: "qh-biz-mu2",
+            value: 1,
+          },
+          {
+            source: "sz",
+            target: "sk",
+            value: 1,
+          },
+          {
+            source: "sk",
+            target: "sk-dmz",
+            value: 1,
+          },
+          {
+            source: "sk",
+            target: "sk-biz",
+            value: 1,
+          },
+          {
+            source: "sz",
+            target: "xl",
+            value: 1,
+          },
+          {
+            source: "xl",
+            target: "xl-dmz",
+            value: 1,
+          },
+          {
+            source: "xl",
+            target: "xl-biz",
+            value: 1,
+          },
+        ],
+      },
+      rawData: raw,
+      addLinks: [],
+    };
+  }
+
+  handleSearch = (value) => {
+    console.log("handleSearch.value", value);
+    d3.selectAll(".nodessvg") // 选择所有class为'nodessvg'的g元素
+      .selectAll("circle") // 在每个g元素中选择所有的circle元素
+      .filter((d) => {
+        return d.name === value ? true : false;
+      })
+      .transition()
+      .duration(2000) // 设置整个动画的持续时间
+      .ease(d3.easeLinear) // 设置动画的缓动函数
+      .attr("r", 50) // 修改圆环的半径，实现波纹效果
+      .style("stroke-opacity", 0) // 设置圆环的边框透明度
+      .style("fill-opacity", 0) // 设置圆环的填充透明度
+      .transition()
+      .duration(2000) // 设置整个动画的持续时间
+      .ease(d3.easeLinear) // 设置动画的缓动函数
+      .attr("r", 10) // 恢复原始半径
+      .style("stroke-opacity", 1) // 恢复原始边框透明度
+      .style("fill-opacity", 1); // 恢复原始填充透明度
+    // .on("end", function () {
+    //   d3.select(this).apply(rippleEffect(value)); // 循环播放动画
+    // });
+    this.setState({ searchValue: value });
+
+    // 使用transition的on方法来实现循环播放动画
+    function rippleEffect(value) {
+      d3.selectAll(".nodesvg")
+        .selectAll("circle") // 在每个g元素中选择所有的circle元素
+        .filter((d) => {
+          return d.name === value ? true : false;
+        })
+        .transition()
+        .duration(2000) // 设置整个动画的持续时间
+        .ease(d3.easeLinear) // 设置动画的缓动函数
+        .attr("r", 50) // 修改圆环的半径，实现波纹效果
+        .style("stroke-opacity", 0) // 设置圆环的边框透明度
+        .style("fill-opacity", 0) // 设置圆环的填充透明度
+        .transition()
+        .duration(2000) // 设置整个动画的持续时间
+        .ease(d3.easeLinear) // 设置动画的缓动函数
+        .attr("r", 10) // 恢复原始半径
+        .style("stroke-opacity", 1) // 恢复原始边框透明度
+        .style("fill-opacity", 1) // 恢复原始填充透明度
+        .on("end", function () {
+          d3.select(this).call(rippleEffect); // 循环播放动画
+        });
+    }
   };
 
   componentDidMount() {
@@ -616,41 +675,11 @@ class BasicForm extends Component {
       .scaleExtent([0.1, 10]) // 鼠标缩放的距离, 范围
       .on("start", () => {
         // zoom 事件发生前 将变小手
-        console.log("start");
+        // console.log("start");
         this.svg.style("cursor", "pointer");
       })
       .on("zoom", (e) => {
         let scale = e.transform.k;
-        // if (scale > 1.3) {
-        //   // this.svg.selectAll('.nodessvg').remove();
-        //   this.setState(
-        //     {
-        //       rawData: raw222,
-        //     }
-        //     // this.updateDiagrarm,
-        //   );
-        //   this.svg
-        //     .selectAll("g.graphGroup")
-        //     .attr(
-        //       "transform",
-        //       "translate(" +
-        //         e.transform.x +
-        //         "," +
-        //         e.transform.y +
-        //         ") scale(" +
-        //         1.3 +
-        //         ")"
-        //     );
-        //   return;
-        // }
-        console.log("zoom", e);
-        // this.svg.selectAll('circle').attr('transform',
-        //     'translate(' + e.transform.x + ',' + e.transform.y + ') scale(' + e.transform.k + ')'
-        // )
-        // this.svg.selectAll('line').attr('transform',
-        //     'translate(' + e.transform.x + ',' + e.transform.y + ') scale(' + e.transform.k + ')'
-        // )
-        // 获取整个图的container <g>
         this.svg
           .selectAll("g.graphGroup")
           .attr(
@@ -691,17 +720,6 @@ class BasicForm extends Component {
             return d.distance || 30;
           })
       )
-      // .force(
-      //   "link",
-      //   d3
-      //     .forceLink()
-      //     .id((d) => {
-      //       console.log("force.d", d);
-      //       return d.id;
-      //     })
-      //     .distance(1000)
-      //     .strength(0.5)
-      // )
       .force(
         "collide",
         d3
@@ -831,71 +849,6 @@ class BasicForm extends Component {
     if (!isEmpty(addLinks)) {
       customLinks = customLinks.concat(addLinks);
     }
-    console.log("generateNode.customLinks", customLinks);
-    console.log("generateNode.addLinks", addLinks);
-    // links2.push({
-    //   source: {
-    //     // group: 4,
-    //     // id: "1-2-0-0",
-    //     // index: 36,
-    //     // name: "jhaz13m02",
-    //     // vx: -0.002500783353980384,
-    //     // vy: -0.004214864708575957,
-    //     // width: 10,
-    //     x: 737.3661074775405,
-    //     y: 194.37301320916268,
-    //   },
-    //   target: {
-    //     // group: 4,
-    //     // id: "2-2-0-0",
-    //     // index: 52,
-    //     // name: "jxaz23m02",
-    //     // vx: 0,
-    //     // vy: 0,
-    //     // width: 10,
-    //     x: 547.4415016904237,
-    //     y: -55.17563481410839,
-    //   },
-    //   value: 1,
-    //   distance: 24,
-    // });
-
-    // links2.push({
-    //   source: "2-1-0-0",
-    //   target: "2-2-0-0",
-    //   value: 1,
-    //   distance: 10000,
-    // });
-    // links2.push({
-    //   source: "1-0-0",
-    //   target: "2-2-0-0",
-    //   value: 1,
-    // });
-    // links2.push({
-    //   source: "1-0-0",
-    //   target: "2-2-0-0",
-    //   value: 1,
-    // });
-    // links2.push({
-    //   source: "0-1",
-    //   target: "2-2-0-0",
-    //   value: 1,
-    // });
-    // links2.push({
-    //   source: 0,
-    //   target: "2-2-0-0",
-    //   value: 1,
-    // });
-    // links2.push({
-    //   source: 1,
-    //   target: 2,
-    //   value: 1,
-    // });
-
-    // console.log("generate.links", links[0]);
-    // console.log("generate.JSONlinks", JSON.stringify(links2));
-
-    // debugger;
     return {
       nodes,
       links: customLinks,
@@ -913,62 +866,71 @@ class BasicForm extends Component {
   }
 
   updateDiagrarm({ addLinks = [] }) {
-    // const { data } = this.state;
     const data = this.generateNode({ addLinks });
     this.setState({ data });
-    // debugger;
-    console.log("generateNode", data);
-    console.log("updateDiagrarm.this", this);
-    console.log("updateDiagrarm.this.linksGroup", this.linksGroup);
 
-    // 创建一个曲线生成器
-    const line = d3
-      .line()
-      .x(function (d) {
-        console.log("line.d", d);
-        return d.x;
-      })
-      .y(function (d) {
-        return d.y;
-      })
-      .curve(d3.curveBasis); // 使用curveBasis曲线类型，可以创建一个向下弯曲的曲线
+    // // 选择所有的路径元素
+    // let link = this.linksGroup
+    //   .selectAll("path")
+    //   .attr("class", "links")
+    //   .data(data.links);
+    // // 移出多余的路径元素
+    // link.exit().remove();
+    // // 为新数据创建路径元素
+    // link = link.enter().append("path").attr("fill", "none").merge(link);
 
-    let link = this.linksGroup
-      .selectAll("path")
-      .attr("class", "links")
-      .data(data.links)
+    // 使用join方法将连线修改为<g>元素，并在其中添加多个<path>
+    let linkGroup = this.linksGroup
+      .selectAll("g") // 选择所有的<g>元素
+      .data(data.links) // 绑定数据
       .join(
         (enter) =>
-          enter.append("path").attr("class", "links").attr("fill", "none"),
+          enter
+            .append("g") // 在enter选择集中添加<g>元素
+            .attr("class", "link-group")
+            .each(function (d) {
+              // 在每个<g>元素中添加多个<path>
+              d3.select(this)
+                .append("path")
+                .attr("class", "link")
+                .attr("fill", "none");
+            }),
         (update) => update, // 处理更新的情况
         (exit) => exit.remove() // 处理退出的情况
-      )
-      .attr("d", line);
-    // link.exit().remove();
-    // link = link
-    //   .enter()
-    //   .append("path")
-    //   .attr("fill", "none")
-    //   // .attr('stroke-width', function (d) {
-    //   //   return Math.sqrt(d.value);
-    //   // })
-    //   // .attr("class", "links")
-    //   // 将连线加粗并改为虚线
-    //   .merge(link); // 合并新旧数据
+      );
+    console.log("linkGroup", linkGroup);
 
-    // 创建一个弧生成器
-    // 创建一个弯曲的曲线
-    // const arc = d3.arc()({
-    //   innerRadius: 0,
-    //   outerRadius: 100,
-    //   startAngle: Math.PI, // 从180度开始
-    //   endAngle: Math.PI * 2, // 到360度结束
-    // });
     if (!isEmpty(addLinks)) {
       debugger;
-      link
-        .filter((item) => {
-          return item.label ? true : false;
+      // 在<g>元素中添加多个<path>，并设置样式和属性
+      linkGroup
+        .selectAll("path")
+        .filter((item) => item.label) // 过滤出带有label的元素
+        .each(function (d) {
+          // 在每个符合条件的连线周围添加透明矩形
+          const parent = d3.select(this.parentNode); // 选择父元素（<g>元素）
+          const line = d3.select(this); // 选择连线元素
+
+          // 创建一个表示连线的路径
+          const lineGenerator = d3
+            .line()
+            .x((d) => d.x)
+            .y((d) => d.y);
+          const pathData = lineGenerator([d.source, d.target]);
+
+          // 获取包围这个路径的最小矩形
+          const bbox = line.node().getBBox();
+
+          parent
+            .append("rect") // 在父元素中添加矩形
+            .attr("x", bbox.x)
+            .attr("y", bbox.y)
+            .attr("width", bbox.width)
+            .attr("height", bbox.height)
+            .attr("fill", "transparent")
+            .on("click", () => {
+              console.log("Line clicked!");
+            });
         })
         // .attr("d", (d) => buildSelectLinks(d))
         .attr("stroke", "rgba(76, 83, 110, 0.5)")
@@ -979,6 +941,14 @@ class BasicForm extends Component {
         //   return 8;
         // })
         .attr("stroke-dasharray", "8, 3")
+        .on("mouseover", function () {
+          // 鼠标移入时的操作
+          d3.select(this).attr("fill", "lightgray");
+        })
+        .on("mouseout", function () {
+          // 鼠标移出时的操作
+          d3.select(this).attr("fill", "transparent");
+        })
         .on("click", (d) => {
           console.log("link.click.d", d);
         })
@@ -991,6 +961,42 @@ class BasicForm extends Component {
           return newDashOffset;
         });
     }
+    // if (!isEmpty(addLinks)) {
+    //   debugger;
+    //   link
+    //     .filter((item) => {
+    //       return item.label ? true : false;
+    //     })
+    //     // .attr("d", (d) => buildSelectLinks(d))
+    //     .attr("stroke", "rgba(76, 83, 110, 0.5)")
+    //     .attr("stroke-width", 3.88209)
+    //     .attr("stroke-opacity", 1)
+    //     // .attr("stroke-dashoffset", (item) => {
+    //     //   console.log("link.attr.item", item);
+    //     //   return 8;
+    //     // })
+    //     .attr("stroke-dasharray", "8, 3")
+    //     .on("click", (d) => {
+    //       console.log("link.click.d", d);
+    //     })
+    //     .transition()
+    //     .duration(100000) // 过渡持续时间为1秒
+    //     .ease(d3.easeLinear) // 使用线性缓动函数
+    //     .attr("stroke-dashoffset", (item) => {
+    //       // 在这里计算新的dashoffset值
+    //       const newDashOffset = calculateNewDashOffset(item);
+    //       return newDashOffset;
+    //     });
+    // }
+    //     .append("rect")
+    //     .attr("x", 0)
+    //     .attr("y", 0)
+    //     .attr("width", 200)
+    //     .attr("height", 10)
+    //     .attr("fill", "transparent")
+    //     .on("click", () => {
+    //       console.log("Line clicked!");
+    //     })
 
     function calculateNewDashOffset(item) {
       // 基于当前状态计算新的dashoffset值
@@ -998,22 +1004,6 @@ class BasicForm extends Component {
       // 例如根据时间、数据等来决定新的dashoffset值
       const newDashOffset = Math.random() * 10000; // 举例：随机生成一个新的dashoffset值
       return newDashOffset;
-    }
-
-    function buildSelectLinks(d) {
-      console.log("buildSelectLinks.d", d);
-      // 在这里，您可以根据链接的数据（d）来计算曲线路径
-      // 例如，您可以使用M、Q等坐标来描述一条曲线
-      // 这里是一个示例，您可以根据您的实际需求进行修改
-      const sourceX = d.source.x;
-      const sourceY = d.source.y;
-      const targetX = d.target.x;
-      const targetY = d.target.y;
-
-      // 构建描述曲线路径的字符串
-      const curvePath = `M${sourceX},${sourceY} Q${sourceX},${targetY} ${targetX},${targetY}`;
-
-      return curvePath;
     }
 
     // .remove()
@@ -1029,7 +1019,7 @@ class BasicForm extends Component {
     // .duration(1000) // 过渡持续时间
     // .attr("stroke", "blue") // 修改连线颜色为蓝色
     // .attr("stroke-width", 2); // 修改连线宽度为2像素
-    console.log("updateDiagrarm.link", link);
+    console.log("updateDiagrarm.link", linkGroup);
 
     // let node = this.nodesGroup.attr('class', 'nodes').selectAll('circle').data(data.nodes);
     // node.exit().remove();
@@ -1208,16 +1198,8 @@ class BasicForm extends Component {
       ); // 迭代次数
 
     this.simulation.alpha(1).restart();
-
+    // 深圳研发
     function ticked() {
-      // link
-      //   .attr('stroke', '#c7c7c7')
-      //   .attr('x1', (d) => d.source.x)
-      //   .attr('y1', (d) => d.source.y)
-      //   .attr('x2', (d) => d.target.x)
-      //   .attr('y2', (d) => d.target.y);
-
-      // node.attr("transform", d => `translate(${d.fixed?d.x:validateXY(d.x,'x')},${d.fixed?d.fixedY:validateXY(d.y,'y')})`);
       node.attr("transform", (d) => {
         if (d.fixed) {
           d.fx = d.fixedX;
@@ -1225,39 +1207,51 @@ class BasicForm extends Component {
         }
         return `translate(${d.x},${d.y})`;
       });
-      // console.log("tick link", link);
-      link
+
+      // 高亮显示搜索到的节点
+      // node.selectAll("circle").style("fill", (d, i) => {
+      //   // console.log("search.d", d);
+      //   // console.log("search.i", i);
+      //   // console.log("search.searchValue", get(this.state, "searchValue", ""));
+      //   if (get(this.state, "searchValue", "")) {
+      //     return d.name === this.state.searchValue ? "red" : "black";
+      //   }
+      //   // return "none";
+      // });
+
+      linkGroup
+        .selectAll("path")
         .attr("stroke", "#c7c7c7")
-        // .attr('x1', (d) => validateXY(d.source.x, 'x'))
-        // .attr('y1', (d) => validateXY(d.source.y, 'y'))
-        // .attr('x2', (d) => validateXY(d.target.x, 'x'))
-        // .attr('y2', (d) => validateXY(d.target.y, 'y'))
         .attr("d", (d) => generateArc(d));
-
-      // node.attr('cx', (d) => d.x).attr('cy', (d) => d.y);
-
-      // node.attr("transform", d => `translate(${d.x},${d.y})`);
-      // node.attr("cx",function(d){ return validateXY(d.x,'x'); })
-      //                .attr("cy",function(d){ return validateXY(d.y,'y'); });
-      // node
-      //   .attr('cx', function (d) {
-      //     return d.x;
-      //   })
-      //   .attr('cy', function (d) {
-      //     return d.y;
-      //   });
     }
 
     function generateArc(d) {
       // console.log("generateArc.d", d);
       let arc = 0;
-      // const QX =
-      //   (d.source.x + (d.target.x - d.source.x) / 2) *
-      //   (d.source.y > d.target.y ? 0.8 : 1.2);
-      // const QY = (d.source.y + (d.target.y - d.source.y) / 2) * 1.1;
-      const QX = d.source.x;
-      const QY = d.target.y;
       if (d.label) {
+        const SX = d.source.x;
+        const SY = d.source.y;
+        const TX = d.target.x;
+        const TY = d.target.y;
+        let QX = d.source.x;
+        let QY = d.target.y;
+        if (SY === TY) {
+          QX = SX + (TX - SX) / 2;
+        } else if (SX === TX) {
+          QY = SY + (TY - SY) / 2;
+        } else if (SX < TX && SY < TY) {
+          QX = (SX + (TX - SX) / 2) * 0.9;
+          QY = (SY + (TY - SY) / 2) * 1.1;
+        } else if (SX > TX && SY > TY) {
+          QX = (TX + (SX - TX) / 2) * 0.9;
+          QY = (TY + (SY - TY) / 2) * 1.1;
+        } else if (SX < TX && SY > TY) {
+          QX = (SX + (TX - SX) / 2) * 1.1;
+          QY = (TY + (SY - TY) / 2) * 1.1;
+        } else {
+          QX = (TX + (SX - TX) / 2) * 1.1;
+          QY = (SY + (TY - SY) / 2) * 1.1;
+        }
         return (
           "M" +
           d.source.x +
@@ -1405,6 +1399,12 @@ class BasicForm extends Component {
       </div> */}
           <div className="d3-node" ref={(node) => (this.d3Node = node)} />
         </div>
+        <Search
+          placeholder="input search text"
+          onSearch={this.handleSearch}
+          enterButton
+        />
+        <svg ref={this.myRef} />
       </>
     );
   }
