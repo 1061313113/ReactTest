@@ -606,55 +606,6 @@ class BasicForm extends Component {
     };
   }
 
-  handleSearch = (value) => {
-    console.log("handleSearch.value", value);
-    d3.selectAll(".nodessvg") // 选择所有class为'nodessvg'的g元素
-      .selectAll("circle") // 在每个g元素中选择所有的circle元素
-      .filter((d) => {
-        return d.name === value ? true : false;
-      })
-      .transition()
-      .duration(2000) // 设置整个动画的持续时间
-      .ease(d3.easeLinear) // 设置动画的缓动函数
-      .attr("r", 50) // 修改圆环的半径，实现波纹效果
-      .style("stroke-opacity", 0) // 设置圆环的边框透明度
-      .style("fill-opacity", 0) // 设置圆环的填充透明度
-      .transition()
-      .duration(2000) // 设置整个动画的持续时间
-      .ease(d3.easeLinear) // 设置动画的缓动函数
-      .attr("r", 10) // 恢复原始半径
-      .style("stroke-opacity", 1) // 恢复原始边框透明度
-      .style("fill-opacity", 1); // 恢复原始填充透明度
-    // .on("end", function () {
-    //   d3.select(this).apply(rippleEffect(value)); // 循环播放动画
-    // });
-    this.setState({ searchValue: value });
-
-    // 使用transition的on方法来实现循环播放动画
-    function rippleEffect(value) {
-      d3.selectAll(".nodesvg")
-        .selectAll("circle") // 在每个g元素中选择所有的circle元素
-        .filter((d) => {
-          return d.name === value ? true : false;
-        })
-        .transition()
-        .duration(2000) // 设置整个动画的持续时间
-        .ease(d3.easeLinear) // 设置动画的缓动函数
-        .attr("r", 50) // 修改圆环的半径，实现波纹效果
-        .style("stroke-opacity", 0) // 设置圆环的边框透明度
-        .style("fill-opacity", 0) // 设置圆环的填充透明度
-        .transition()
-        .duration(2000) // 设置整个动画的持续时间
-        .ease(d3.easeLinear) // 设置动画的缓动函数
-        .attr("r", 10) // 恢复原始半径
-        .style("stroke-opacity", 1) // 恢复原始边框透明度
-        .style("fill-opacity", 1) // 恢复原始填充透明度
-        .on("end", function () {
-          d3.select(this).call(rippleEffect); // 循环播放动画
-        });
-    }
-  };
-
   componentDidMount() {
     this.svg = d3
       .select(this.d3Node)
@@ -855,6 +806,76 @@ class BasicForm extends Component {
     };
   };
 
+  buildLinks = () => {
+    d3
+      // .selectAll("g")
+      .selectAll(".link") // 选择所有class为'nodessvg'的g元素
+      .selectAll("path") // 在每个g元素中选择所有的circle元素
+      .filter((item) => item.label) // 过滤出带有label的元素
+      .each(function (d) {
+        // 在每个符合条件的连线周围添加透明矩形
+        const parent = d3.select(this.parentNode); // 选择父元素（<g>元素）
+        const line = d3.select(this); // 选择连线元素
+
+        // 创建一个表示连线的路径
+        const lineGenerator = d3
+          .line()
+          .x((d) => d.x)
+          .y((d) => d.y);
+        const pathData = lineGenerator([d.source, d.target]);
+
+        // 获取包围这个路径的最小矩形
+        const bbox = line.node().getBBox();
+
+        parent
+          .append("rect") // 在父元素中添加矩形
+          .attr("x", bbox.x)
+          .attr("y", bbox.y)
+          .attr("width", bbox.width)
+          .attr("height", bbox.height)
+          .attr("fill", "transparent");
+        // .on("click", () => {
+        //   console.log("Line clicked!");
+        // });
+      })
+      // .attr("d", (d) => buildSelectLinks(d))
+      .attr("stroke", "rgba(76, 83, 110, 0.5)")
+      .attr("stroke-width", 3.88209)
+      .attr("stroke-opacity", 1)
+      // .attr("stroke-dashoffset", (item) => {
+      //   console.log("link.attr.item", item);
+      //   return 8;
+      // })
+      .attr("stroke-dasharray", "8, 3")
+      .on("mouseover", function () {
+        // 鼠标移入时的操作
+        d3.select(this).attr("fill", "lightgray");
+      })
+      .on("mouseout", function () {
+        // 鼠标移出时的操作
+        d3.select(this).attr("fill", "transparent");
+      })
+      .on("click", (d) => {
+        console.log("link.click.d", d);
+      })
+      .transition()
+      .duration(100000) // 过渡持续时间为1秒
+      .ease(d3.easeLinear) // 使用线性缓动函数
+      .attr("stroke-dashoffset", (item) => {
+        // 在这里计算新的dashoffset值
+        const newDashOffset = calculateNewDashOffset(item);
+        return newDashOffset;
+      });
+
+    function calculateNewDashOffset(item) {
+      // 基于当前状态计算新的dashoffset值
+      // 这里可以根据具体的逻辑和需求进行计算
+      // 例如根据时间、数据等来决定新的dashoffset值
+      const newDashOffset = Math.random() * 10000; // 举例：随机生成一个新的dashoffset值
+      return newDashOffset;
+    }
+  };
+
   componentDidUpdate(prevProps, prevState) {
     // console.log("componentDidUpdate.prevProps", prevProps);
     // console.log("componentDidUpdate.prevState", prevState);
@@ -887,7 +908,7 @@ class BasicForm extends Component {
         (enter) =>
           enter
             .append("g") // 在enter选择集中添加<g>元素
-            .attr("class", "link-group")
+            .attr("class", "link")
             .each(function (d) {
               // 在每个<g>元素中添加多个<path>
               d3.select(this)
@@ -900,67 +921,69 @@ class BasicForm extends Component {
       );
     console.log("linkGroup", linkGroup);
 
-    if (!isEmpty(addLinks)) {
-      debugger;
-      // 在<g>元素中添加多个<path>，并设置样式和属性
-      linkGroup
-        .selectAll("path")
-        .filter((item) => item.label) // 过滤出带有label的元素
-        .each(function (d) {
-          // 在每个符合条件的连线周围添加透明矩形
-          const parent = d3.select(this.parentNode); // 选择父元素（<g>元素）
-          const line = d3.select(this); // 选择连线元素
+    this.buildLinks();
 
-          // 创建一个表示连线的路径
-          const lineGenerator = d3
-            .line()
-            .x((d) => d.x)
-            .y((d) => d.y);
-          const pathData = lineGenerator([d.source, d.target]);
+    // if (!isEmpty(addLinks)) {
+    //   debugger;
+    //   // 在<g>元素中添加多个<path>，并设置样式和属性
+    //   linkGroup
+    //     .selectAll("path")
+    //     .filter((item) => item.label) // 过滤出带有label的元素
+    //     .each(function (d) {
+    //       // 在每个符合条件的连线周围添加透明矩形
+    //       const parent = d3.select(this.parentNode); // 选择父元素（<g>元素）
+    //       const line = d3.select(this); // 选择连线元素
 
-          // 获取包围这个路径的最小矩形
-          const bbox = line.node().getBBox();
+    //       // 创建一个表示连线的路径
+    //       const lineGenerator = d3
+    //         .line()
+    //         .x((d) => d.x)
+    //         .y((d) => d.y);
+    //       const pathData = lineGenerator([d.source, d.target]);
 
-          parent
-            .append("rect") // 在父元素中添加矩形
-            .attr("x", bbox.x)
-            .attr("y", bbox.y)
-            .attr("width", bbox.width)
-            .attr("height", bbox.height)
-            .attr("fill", "transparent")
-            .on("click", () => {
-              console.log("Line clicked!");
-            });
-        })
-        // .attr("d", (d) => buildSelectLinks(d))
-        .attr("stroke", "rgba(76, 83, 110, 0.5)")
-        .attr("stroke-width", 3.88209)
-        .attr("stroke-opacity", 1)
-        // .attr("stroke-dashoffset", (item) => {
-        //   console.log("link.attr.item", item);
-        //   return 8;
-        // })
-        .attr("stroke-dasharray", "8, 3")
-        .on("mouseover", function () {
-          // 鼠标移入时的操作
-          d3.select(this).attr("fill", "lightgray");
-        })
-        .on("mouseout", function () {
-          // 鼠标移出时的操作
-          d3.select(this).attr("fill", "transparent");
-        })
-        .on("click", (d) => {
-          console.log("link.click.d", d);
-        })
-        .transition()
-        .duration(100000) // 过渡持续时间为1秒
-        .ease(d3.easeLinear) // 使用线性缓动函数
-        .attr("stroke-dashoffset", (item) => {
-          // 在这里计算新的dashoffset值
-          const newDashOffset = calculateNewDashOffset(item);
-          return newDashOffset;
-        });
-    }
+    //       // 获取包围这个路径的最小矩形
+    //       const bbox = line.node().getBBox();
+
+    //       parent
+    //         .append("rect") // 在父元素中添加矩形
+    //         .attr("x", bbox.x)
+    //         .attr("y", bbox.y)
+    //         .attr("width", bbox.width)
+    //         .attr("height", bbox.height)
+    //         .attr("fill", "transparent");
+    //       // .on("click", () => {
+    //       //   console.log("Line clicked!");
+    //       // });
+    //     })
+    //     // .attr("d", (d) => buildSelectLinks(d))
+    //     .attr("stroke", "rgba(76, 83, 110, 0.5)")
+    //     .attr("stroke-width", 3.88209)
+    //     .attr("stroke-opacity", 1)
+    //     // .attr("stroke-dashoffset", (item) => {
+    //     //   console.log("link.attr.item", item);
+    //     //   return 8;
+    //     // })
+    //     .attr("stroke-dasharray", "8, 3")
+    //     .on("mouseover", function () {
+    //       // 鼠标移入时的操作
+    //       d3.select(this).attr("fill", "lightgray");
+    //     })
+    //     .on("mouseout", function () {
+    //       // 鼠标移出时的操作
+    //       d3.select(this).attr("fill", "transparent");
+    //     })
+    //     .on("click", (d) => {
+    //       console.log("link.click.d", d);
+    //     })
+    //     .transition()
+    //     .duration(100000) // 过渡持续时间为1秒
+    //     .ease(d3.easeLinear) // 使用线性缓动函数
+    //     .attr("stroke-dashoffset", (item) => {
+    //       // 在这里计算新的dashoffset值
+    //       const newDashOffset = calculateNewDashOffset(item);
+    //       return newDashOffset;
+    //     });
+    // }
     // if (!isEmpty(addLinks)) {
     //   debugger;
     //   link
@@ -997,14 +1020,6 @@ class BasicForm extends Component {
     //     .on("click", () => {
     //       console.log("Line clicked!");
     //     })
-
-    function calculateNewDashOffset(item) {
-      // 基于当前状态计算新的dashoffset值
-      // 这里可以根据具体的逻辑和需求进行计算
-      // 例如根据时间、数据等来决定新的dashoffset值
-      const newDashOffset = Math.random() * 10000; // 举例：随机生成一个新的dashoffset值
-      return newDashOffset;
-    }
 
     // .remove()
     // // 添加过渡效果
@@ -1379,6 +1394,55 @@ class BasicForm extends Component {
     // this.setState({
     //   addLinks,
     // });
+  };
+
+  handleSearch = (value) => {
+    console.log("handleSearch.value", value);
+    d3.selectAll(".nodessvg") // 选择所有class为'nodessvg'的g元素
+      .selectAll("circle") // 在每个g元素中选择所有的circle元素
+      .filter((d) => {
+        return d.name === value ? true : false;
+      })
+      .transition()
+      .duration(2000) // 设置整个动画的持续时间
+      .ease(d3.easeLinear) // 设置动画的缓动函数
+      .attr("r", 50) // 修改圆环的半径，实现波纹效果
+      .style("stroke-opacity", 0) // 设置圆环的边框透明度
+      .style("fill-opacity", 0) // 设置圆环的填充透明度
+      .transition()
+      .duration(2000) // 设置整个动画的持续时间
+      .ease(d3.easeLinear) // 设置动画的缓动函数
+      .attr("r", 10) // 恢复原始半径
+      .style("stroke-opacity", 1) // 恢复原始边框透明度
+      .style("fill-opacity", 1); // 恢复原始填充透明度
+    // .on("end", function () {
+    //   d3.select(this).apply(rippleEffect(value)); // 循环播放动画
+    // });
+    this.setState({ searchValue: value });
+
+    // 使用transition的on方法来实现循环播放动画
+    function rippleEffect(value) {
+      d3.selectAll(".nodesvg")
+        .selectAll("circle") // 在每个g元素中选择所有的circle元素
+        .filter((d) => {
+          return d.name === value ? true : false;
+        })
+        .transition()
+        .duration(2000) // 设置整个动画的持续时间
+        .ease(d3.easeLinear) // 设置动画的缓动函数
+        .attr("r", 50) // 修改圆环的半径，实现波纹效果
+        .style("stroke-opacity", 0) // 设置圆环的边框透明度
+        .style("fill-opacity", 0) // 设置圆环的填充透明度
+        .transition()
+        .duration(2000) // 设置整个动画的持续时间
+        .ease(d3.easeLinear) // 设置动画的缓动函数
+        .attr("r", 10) // 恢复原始半径
+        .style("stroke-opacity", 1) // 恢复原始边框透明度
+        .style("fill-opacity", 1) // 恢复原始填充透明度
+        .on("end", function () {
+          d3.select(this).call(rippleEffect); // 循环播放动画
+        });
+    }
   };
 
   render() {
